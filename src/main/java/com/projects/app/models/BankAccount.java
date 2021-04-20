@@ -13,19 +13,27 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@Data
 @Entity
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-public class Todo {
+@NoArgsConstructor
+public class BankAccount {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Todo UUID in the database")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Schema(description = "bankAccountID", hidden = true)
     @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    private @NotBlank @Size(min = 1, max = 100) String title;
-    private @NotBlank @Size(min = 1, max = 1000) String description;
+    @NotBlank
+    @Size(min = 10, max = 11)
+    private String accountNumber;
 
+    @NotBlank
+    @Size(min = 1, max = 100)
+    private String bankName;
+
+    @NotBlank
+    @Size(min = 1, max = 100)
+    private String branch;
 }

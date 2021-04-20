@@ -1,4 +1,4 @@
-package com.projects.app.models;
+package com.projects.app.models.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;

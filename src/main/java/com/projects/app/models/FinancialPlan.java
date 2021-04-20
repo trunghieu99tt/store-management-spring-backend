@@ -11,21 +11,29 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
-@Data
 @Entity
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
-public class Todo {
+@NoArgsConstructor
+public class FinancialPlan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Todo UUID in the database")
+    @Schema(description = "financialPlanID", hidden = true)
     @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-    private @NotBlank @Size(min = 1, max = 100) String title;
-    private @NotBlank @Size(min = 1, max = 1000) String description;
+
+    @NotNull
+    @Positive(message = "Total must be positive")
+    private float total;
+
+    @NotBlank(message = "Please provide description for FinancialPlan")
+    @Size(min = 1, max = 500, message = "Description must not be longer than 500 characters")
+    private String description;
 
 }
