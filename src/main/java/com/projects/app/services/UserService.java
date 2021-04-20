@@ -1,6 +1,6 @@
-package com.projects.aprepo
+package com.projects.app.services;
 
-import com.projects.app.repositories.UserRepository;
+import com.projects.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

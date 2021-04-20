@@ -2,7 +2,7 @@ package com.projects.app.services;
 
 import com.projects.app.models.Todo;
 import com.projects.app.models.TodoValidator;
-import com.projects.app.repositories.TodoRepository;
+import com.projects.app.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;

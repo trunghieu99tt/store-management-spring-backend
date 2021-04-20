@@ -28,7 +28,7 @@ public class Profit {
 
     @NotBlank
     @Size(min = 1, max = 100)
-    private String desc;
+    private String description;
 
     @NotNull
     @Positive(message = "Total must be positive")

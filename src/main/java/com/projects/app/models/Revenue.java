@@ -41,7 +41,7 @@ public class Revenue {
     private float total;
 
     @NotNull
-    private Date date;
+    private Date createdAt;
 
     @NotBlank(message = "Please provide description for expense")
     @Size(min = 1, max = 500, message = "Description must not be longer than 500 characters")
