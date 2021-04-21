@@ -6,14 +6,16 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@Entity
 @EqualsAndHashCode(callSuper = true)
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "staff")
 public class Staff extends User {
 
     @NotBlank(message = "Please provide department for Staff")
@@ -21,4 +23,7 @@ public class Staff extends User {
     private String department;
 
 
+    public Staff(long staffID) {
+        this.setId(staffID);
+    }
 }

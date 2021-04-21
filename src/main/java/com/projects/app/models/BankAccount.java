@@ -36,4 +36,8 @@ public class BankAccount {
     @NotBlank
     @Size(min = 1, max = 100)
     private String branch;
+
+    public BankAccount(long bankAccountID) {
+        this.id = bankAccountID;
+    }
 }

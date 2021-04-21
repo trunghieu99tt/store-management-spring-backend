@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RevenueSpecification implements Specification<Revenue> {
-    private long bankAccountID;
+    private Long bankAccountID;
     private Date day;
 
     @Override
