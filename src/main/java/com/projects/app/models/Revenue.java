@@ -41,6 +41,7 @@ public class Revenue {
     private float total;
 
     @NotNull
+    @Temporal(TemporalType.DATE)
     private Date createdAt;
 
     @NotBlank(message = "Please provide description for expense")

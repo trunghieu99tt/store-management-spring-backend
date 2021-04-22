@@ -35,7 +35,7 @@ public class RevenueDTO {
     private String description;
 
     @NotNull
-    private long bankAccountID;
+    private String bankAccountNumber;
 
     @NotNull
     private long staffID;

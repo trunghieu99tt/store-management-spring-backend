@@ -2,6 +2,7 @@ package com.projects.app.controllers;
 
 import com.projects.app.common.exception.model.BackendError;
 import com.projects.app.common.response.ResponseTool;
+import com.projects.app.common.response.model.APIPagingResponse;
 import com.projects.app.common.response.model.APIResponse;
 import com.projects.app.models.Revenue;
 import com.projects.app.models.request.RevenueDTO;
@@ -21,8 +22,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Date;
 
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
 @RequestMapping("/api/v1/revenue")
 @RequiredArgsConstructor
@@ -43,16 +46,16 @@ public class RevenueController {
     @ApiOperation(value = "Get revenues")
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<APIResponse> getRevenues(
-            @RequestParam(required = false, defaultValue = "-1") long bankAccountID,
+    public ResponseEntity<APIPagingResponse> getRevenues(
             @RequestParam(required = false) Date day,
             @RequestParam(required = false, defaultValue = Constant.DEFAULT_PAGE_SIZE) Integer pageSize,
             @RequestParam(required = false, defaultValue = Constant.DEFAULT_PAGE_NUMBER) Integer pageNumber
     ) throws BackendError {
         try {
-            Page<Revenue> revenues = revenueService.getAllRevenue(bankAccountID, day, pageNumber, pageSize);
-            return ResponseTool.GET_OK(revenues.getContent());
+            Page<Revenue> revenues = revenueService.getAllRevenue(day, pageNumber, pageSize);
+            return ResponseTool.GET_OK(new ArrayList<Object>(revenues.getContent()), (int) revenues.getTotalElements());
         } catch (Exception e) {
+            e.printStackTrace();
             throw new BackendError(HttpStatus.BAD_REQUEST, "Invalid bank account ID");
         }
     }
@@ -63,9 +66,7 @@ public class RevenueController {
     public ResponseEntity<APIResponse> getRevenue(
             @PathVariable(name = "revenueID") long revenueID
     ) throws BackendError {
-
         Revenue revenue = revenueService.getRevenue(revenueID);
-
         if (revenue == null) {
             String message = "Invalid revenue ID";
             throw new BackendError(HttpStatus.BAD_REQUEST, message);

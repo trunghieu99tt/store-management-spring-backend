@@ -4,6 +4,7 @@ import com.projects.app.models.Revenue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -18,19 +19,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RevenueSpecification implements Specification<Revenue> {
-    private Long bankAccountID;
     private Date day;
 
+    @SneakyThrows
     @Override
     public Predicate toPredicate(Root<Revenue> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicateList = new LinkedList<>();
-        // filter by bankAccountID;
-        if (bankAccountID != -1) {
-            predicateList.add(criteriaBuilder.equal(root.get("bankAccountID"), bankAccountID));
-        }
+
+
         // filter by date
         if (day != null) {
-            predicateList.add(criteriaBuilder.equal(root.<Date>get("createdAt"), day));
+            Date nextDay = new Date(day.getTime() + +1000 * 60 * 60 * 24);
+            predicateList.add(criteriaBuilder.between(root.<Date>get("createdAt"), day, nextDay));
         }
         return criteriaBuilder.and(predicateList.toArray(new Predicate[]{}));
 

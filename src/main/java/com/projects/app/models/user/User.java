@@ -32,6 +32,7 @@ public class User implements Serializable {
     private String name;
 
     @NotBlank(message = "Please provide email")
+
     @Email(message = "Please provide a valid email address")
     private String email;
 
@@ -45,6 +46,7 @@ public class User implements Serializable {
     private String username;
 
     @NotBlank(message = "Please provide phone ")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Size(min = 1, max = 100)
     private String password;
 

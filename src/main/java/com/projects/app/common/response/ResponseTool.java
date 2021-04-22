@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public class ResponseTool {
+public class ResponseTool<T> {
     public static ResponseEntity<APIResponse> POST_OK(Object data) {
         return new ResponseEntity<APIResponse>(new APIResponse(201, "Created", data), HttpStatus.CREATED);
     }

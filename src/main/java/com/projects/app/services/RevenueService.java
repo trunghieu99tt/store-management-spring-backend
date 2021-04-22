@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,15 +34,14 @@ public class RevenueService {
     private BankAccountRepository bankAccountRepository;
 
     /**
-     * @param bankAccountID id of bank account
-     * @param day           day to filter
-     * @param pageNumber    pageNumber
-     * @param pageSize      pageSize
+     * @param day        day to filter
+     * @param pageNumber pageNumber
+     * @param pageSize   pageSize
      * @return Page<Revenue>
      */
-    public Page<Revenue> getAllRevenue(Long bankAccountID, Date day, int pageNumber, int pageSize) {
+    public Page<Revenue> getAllRevenue(Date day, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        RevenueSpecification revenueSpecification = new RevenueSpecification(bankAccountID, day);
+        RevenueSpecification revenueSpecification = new RevenueSpecification(day);
         return revenueRepository.findAll(revenueSpecification, pageable);
     }
 
@@ -90,6 +90,13 @@ public class RevenueService {
         return false;
     }
 
+    /**
+     * parse from revenueDTO to revenue
+     *
+     * @param revenueDTO
+     * @return Revenue
+     * @throws BackendError custom backend error
+     */
     public Revenue parseRevenueDTOToRevenue(RevenueDTO revenueDTO) throws BackendError {
         Revenue revenue = new Revenue();
         revenue.setQuantity(revenueDTO.getQuantity());
@@ -97,11 +104,13 @@ public class RevenueService {
         revenue.setPriceUnit(revenueDTO.getPriceUnit());
         revenue.setTotal(revenueDTO.getTotal());
         revenue.setDescription(revenueDTO.getDescription());
-        Optional<BankAccount> bankAccount = bankAccountRepository.findById(revenueDTO.getBankAccountID());
-        if (bankAccount.isPresent()) {
-            revenue.setBankAccount(bankAccount.get());
+        System.out.println(revenueDTO.getBankAccountNumber());
+        List<BankAccount> bankAccount =
+                bankAccountRepository.findBankAccountByAccountNumber(revenueDTO.getBankAccountNumber());
+        if (bankAccount.size() > 0) {
+            revenue.setBankAccount(bankAccount.get(0));
         } else {
-            throw new BackendError(HttpStatus.BAD_REQUEST, "Invalid bank account ID");
+            throw new BackendError(HttpStatus.BAD_REQUEST, "Số tài khoản không đúng");
         }
         Optional<User> staff = userRepository.findById(revenueDTO.getStaffID());
         if (staff.isPresent()) {
