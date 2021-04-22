@@ -26,52 +26,6 @@ public class Constant {
     public static final int LAST6MONTHS_CODE = 4;
     public static final int LASTYEAR_CODE = 5;
 
-    public static enum STATUS {
-        ACTIVE_STATUS(0, "Active"),
-        DELETED_STATUS(1, "Deleted"),
-        REVOKE_STATUS(2, "Revoke"),
-        DISABLED_STATUS(3, "Disable"),
-        DELETED_FOREVER_STATUS(4, "Deleted forever"),
-        PENDING(5, "Pending"),
-        TRIAL_ACCOUNT_STATUS(6, "Trial");
-
-        private final int value;
-        private final String type;
-
-        private STATUS(int value, String type) {
-            this.value = value;
-            this.type = type;
-        }
-
-        public int getValue() {
-            return value;
-        }
-
-        public String getType() {
-            return type;
-        }
-    }
-
-    public static enum MESSAGE_STATUS {
-        UNREAD(0, "unread"),
-        READ(1, "read");
-
-        private final int value;
-        private final String type;
-
-        private MESSAGE_STATUS(int value, String type) {
-            this.value = value;
-            this.type = type;
-        }
-
-        public int getValue() {
-            return value;
-        }
-
-        public String getType() {
-            return type;
-        }
-    }
 
     public static enum USER_ROLE {
         SYS_ADMIN(1, "System Admin"),
@@ -114,41 +68,6 @@ public class Constant {
         }
     }
 
-    public static enum ORDER_STATUS {
-        PENDING(0),
-        SHIPPING(1),
-        COMPLETED(2);
-
-        private final int status;
-
-        private ORDER_STATUS(int status) {
-            this.status = status;
-        }
-
-        public int getStatus() {
-            return status;
-        }
-    }
-
-    public static enum PRODUCT_ATTRIBUTE {
-        DETAIL_IMAGES(1, "Detail images");
-
-        private final int id;
-        private final String name;
-
-        private PRODUCT_ATTRIBUTE(int id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
 
     public static final long ONE_MINUTE_IN_MILLIS = 60000;
     public static final long ONE_SECOND_IN_MILLIS = 1000;
@@ -162,6 +81,12 @@ public class Constant {
 
     // Custom token header
     public static final String HEADER_TOKEN = "X-Access-Token";
+
+    // define sort key value for revenue
+    public static final int SORT_BY_REVENUE_QUANTITY = 1;
+    public static final int SORT_BY_PRICE_UNIT = 2;
+    public static final int SORT_BY_TOTAL = 3;
+    public static final int SORT_BY_NAME = 4;
 
     public enum ParamError {
         MISSING_USERNAME_AND_EMAIL("accountName", "Missing both user name and email address"),

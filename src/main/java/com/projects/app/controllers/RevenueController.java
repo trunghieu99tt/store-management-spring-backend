@@ -23,7 +23,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
@@ -48,11 +52,13 @@ public class RevenueController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<APIPagingResponse> getRevenues(
             @RequestParam(required = false) Date day,
+            @RequestParam(required = false, defaultValue = "4") int sortBy,
+            @RequestParam(required = false, defaultValue = "true") boolean isAsc,
             @RequestParam(required = false, defaultValue = Constant.DEFAULT_PAGE_SIZE) Integer pageSize,
             @RequestParam(required = false, defaultValue = Constant.DEFAULT_PAGE_NUMBER) Integer pageNumber
     ) throws BackendError {
         try {
-            Page<Revenue> revenues = revenueService.getAllRevenue(day, pageNumber, pageSize);
+            Page<Revenue> revenues = revenueService.getAllRevenue(day, sortBy, isAsc, pageNumber, pageSize);
             return ResponseTool.GET_OK(new ArrayList<Object>(revenues.getContent()), (int) revenues.getTotalElements());
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,4 +128,31 @@ public class RevenueController {
         Revenue newRevenue = revenueService.add(revenue);
         return ResponseTool.POST_OK(newRevenue);
     }
+
+    @ApiOperation(value = "Get statistic")
+    @GetMapping("/statistic")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<APIResponse> getStatistic(
+            @RequestParam Date dayStart,
+            @RequestParam Date dayEnd
+    ) throws BackendError {
+        List<Revenue> revenues = revenueService.getStatistic(dayStart, dayEnd);
+        return ResponseTool.GET_OK(revenues);
+    }
+
+    @ApiOperation(value = "Get data of the nearest 2 months")
+    @GetMapping("/get-2-nearest-months")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<APIResponse> getNearestTwoMonths() throws BackendError {
+        List<Revenue> lastMonthData = revenueService.getDataInMonth(-1);
+        List<Revenue> currentMonthData = revenueService.getDataInMonth(0);
+        System.out.println(lastMonthData.size());
+        System.out.println(currentMonthData.size());
+        List<Revenue> mergedData = Stream.of(lastMonthData, currentMonthData)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        return ResponseTool.GET_OK(mergedData);
+    }
+
+
 }

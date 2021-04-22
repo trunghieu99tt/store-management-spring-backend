@@ -17,6 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -35,15 +38,18 @@ public class RevenueService {
 
     /**
      * @param day        day to filter
+     * @param isAsc      isAsc
+     * @param sortBy     sortBy
      * @param pageNumber pageNumber
      * @param pageSize   pageSize
      * @return Page<Revenue>
      */
-    public Page<Revenue> getAllRevenue(Date day, int pageNumber, int pageSize) {
+    public Page<Revenue> getAllRevenue(Date day, int sortBy, boolean isAsc, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        RevenueSpecification revenueSpecification = new RevenueSpecification(day);
+        RevenueSpecification revenueSpecification = new RevenueSpecification(day, sortBy, isAsc);
         return revenueRepository.findAll(revenueSpecification, pageable);
     }
+
 
     /**
      * create new revenue
@@ -121,4 +127,26 @@ public class RevenueService {
         return revenue;
     }
 
+    /**
+     * Get statistic between 2 day
+     *
+     * @param dayStart dayStart
+     * @param dayEnd   dayEnd
+     * @return List<Revenue>
+     */
+    public List<Revenue> getStatistic(Date dayStart, Date dayEnd) {
+        return revenueRepository.getRevenueByCreatedAtBetween(dayStart, dayEnd);
+    }
+
+    public List<Revenue> getDataInMonth(int monthFromNow) {
+        LocalDate todayDate = LocalDate.now();
+        YearMonth ym = YearMonth.from(todayDate);
+        YearMonth targetYm = ym.plusMonths(monthFromNow);
+        LocalDate firstDay = targetYm.atDay(1);
+        LocalDate lastDay = targetYm.atEndOfMonth();
+        Date firstDate = Date.from(firstDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date lastDate = Date.from(lastDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return revenueRepository.getRevenueByCreatedAtBetween(firstDate, lastDate);
+
+    }
 }
