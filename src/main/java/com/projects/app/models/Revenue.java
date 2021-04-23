@@ -42,6 +42,7 @@ public class Revenue {
 
     @NotNull
     @Temporal(TemporalType.DATE)
+    @Column(name = "created_at")
     private Date createdAt;
 
     @NotBlank(message = "Please provide description for expense")

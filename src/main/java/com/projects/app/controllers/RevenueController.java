@@ -144,15 +144,11 @@ public class RevenueController {
     @GetMapping("/get-2-nearest-months")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<APIResponse> getNearestTwoMonths() throws BackendError {
-        List<Revenue> lastMonthData = revenueService.getDataInMonth(-1);
-        List<Revenue> currentMonthData = revenueService.getDataInMonth(0);
-        System.out.println(lastMonthData.size());
-        System.out.println(currentMonthData.size());
+        List<Revenue> lastMonthData = revenueService.getDataInMonthFromNow(-1);
+        List<Revenue> currentMonthData = revenueService.getDataInMonthFromNow(0);
         List<Revenue> mergedData = Stream.of(lastMonthData, currentMonthData)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
         return ResponseTool.GET_OK(mergedData);
     }
-
-
 }

@@ -138,15 +138,44 @@ public class RevenueService {
         return revenueRepository.getRevenueByCreatedAtBetween(dayStart, dayEnd);
     }
 
-    public List<Revenue> getDataInMonth(int monthFromNow) {
-        LocalDate todayDate = LocalDate.now();
-        YearMonth ym = YearMonth.from(todayDate);
-        YearMonth targetYm = ym.plusMonths(monthFromNow);
-        LocalDate firstDay = targetYm.atDay(1);
-        LocalDate lastDay = targetYm.atEndOfMonth();
+
+    /**
+     * Get all revenue data in a specific month
+     *
+     * @param month month
+     * @param year  year
+     * @return List<Revenue>
+     */
+
+    public List<Revenue> getDataInMonth(int month, int year) {
+        YearMonth ym = YearMonth.of(year, month);
+        LocalDate firstDay = ym.atDay(1);
+        LocalDate lastDay = ym.atEndOfMonth();
         Date firstDate = Date.from(firstDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date lastDate = Date.from(lastDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
         return revenueRepository.getRevenueByCreatedAtBetween(firstDate, lastDate);
+    }
+
+    /**
+     * Get all revenue data in a specific month from current month
+     *
+     * @param monthFromNow :
+     * @return List<Revenue>
+     */
+    public List<Revenue> getDataInMonthFromNow(int monthFromNow) {
+        LocalDate todayDate = LocalDate.now();
+        YearMonth ym = YearMonth.from(todayDate);
+        int month;
+        int year;
+        YearMonth targetYm;
+        if (monthFromNow >= 0) {
+            targetYm = ym.plusMonths(monthFromNow);
+        } else {
+            targetYm = ym.minusMonths(-monthFromNow);
+        }
+        month = targetYm.getMonthValue();
+        year = targetYm.getYear();
+        return getDataInMonth(month, year);
 
     }
 }
