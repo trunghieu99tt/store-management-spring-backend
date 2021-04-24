@@ -60,4 +60,16 @@ public class Revenue {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Staff staff;
+
+    @ManyToOne
+    @JoinColumn(name = "profitID")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Profit profit;
+
+    @ManyToOne
+    @JoinColumn(name = "reportID")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Report report;
 }

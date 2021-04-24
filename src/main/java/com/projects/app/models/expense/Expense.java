@@ -2,6 +2,8 @@ package com.projects.app.models.expense;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.projects.app.models.BankAccount;
+import com.projects.app.models.Profit;
+import com.projects.app.models.Report;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -45,5 +47,17 @@ public class Expense {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private BankAccount bankAccount;
+
+    @ManyToOne
+    @JoinColumn(name = "reportID")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Report report;
+
+    @ManyToOne
+    @JoinColumn(name = "profitID")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Profit profit;
 }
 
