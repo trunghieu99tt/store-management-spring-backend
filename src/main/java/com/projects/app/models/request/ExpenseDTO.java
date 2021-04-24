@@ -1,4 +1,4 @@
-package com.projects.app.models.expense;
+package com.projects.app.models.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.projects.app.models.BankAccount;
@@ -11,18 +11,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.util.Date;
-
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Expense {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Schema(description = "expenseID", hidden = true)
-    @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
-    private Long id;
+public class ExpenseDTO {
 
     @NotNull
     private Date date;
@@ -39,11 +31,6 @@ public class Expense {
     @NotBlank(message = "Please provide payment method for expense")
     @Size(min = 1, max = 500, message = "Payment method must not be longer than 500 characters")
     private String paymentMethod;
-
-    @ManyToOne
-    @JoinColumn(name = "bankAccountID")
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    private BankAccount bankAccount;
+    @NotNull
+    private String bankAccountNumber;
 }
-
