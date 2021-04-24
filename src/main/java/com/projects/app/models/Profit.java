@@ -2,14 +2,9 @@ package com.projects.app.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -33,4 +28,10 @@ public class Profit {
     @NotNull
     @Positive(message = "Total must be positive")
     private float total;
+
+    @ManyToOne
+    @JoinColumn(name = "reportID")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Report report;
 }
