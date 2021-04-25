@@ -1,6 +1,7 @@
 package com.projects.app.models.expense;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.projects.app.models.BankAccount;
 import com.projects.app.models.Profit;
 import com.projects.app.models.Report;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.util.Collection;
 import java.util.Date;
 
 @Entity
@@ -21,9 +23,8 @@ import java.util.Date;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Expense {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     @Schema(description = "expenseID", hidden = true)
-    @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @NotNull
@@ -42,22 +43,31 @@ public class Expense {
     @Size(min = 1, max = 500, message = "Payment method must not be longer than 500 characters")
     private String paymentMethod;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "bankAccountID")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private BankAccount bankAccount;
 
-    @ManyToOne
-    @JoinColumn(name = "reportID")
+//    @ManyToMany(mappedBy = "expenses", cascade = {
+//            CascadeType.PERSIST,
+//            CascadeType.MERGE
+//    })
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    @JsonIgnore
+//    private Collection<Report> reports;
+
+    @ManyToMany(mappedBy = "expenses")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Report report;
+    @JsonIgnoreProperties
+    private Collection<Report> reports;
 
     @ManyToOne
-    @JoinColumn(name = "profitID")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Profit profit;
 }
 

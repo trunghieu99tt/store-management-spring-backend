@@ -22,8 +22,16 @@ public class Staff extends User {
     @Size(min = 1, max = 500)
     private String department;
 
+//    @OneToMany(mappedBy = "staff", cascade = CascadeType.PERSIST)
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    @JsonIgnoreProperties
+//    private Collection<Report> reports;
 
-    public Staff(long staffID) {
-        this.setId(staffID);
-    }
+//    @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL)
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    @JsonIgnore
+//    private Collection<Expense> expenses;
 }
+                                                                                    

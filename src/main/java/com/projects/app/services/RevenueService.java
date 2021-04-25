@@ -110,7 +110,6 @@ public class RevenueService {
         revenue.setPriceUnit(revenueDTO.getPriceUnit());
         revenue.setTotal(revenueDTO.getTotal());
         revenue.setDescription(revenueDTO.getDescription());
-        System.out.println(revenueDTO.getBankAccountNumber());
         List<BankAccount> bankAccount =
                 bankAccountRepository.findBankAccountByAccountNumber(revenueDTO.getBankAccountNumber());
         if (bankAccount.size() > 0) {

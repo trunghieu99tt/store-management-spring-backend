@@ -13,11 +13,22 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+//        // filter by date
+//        if (day != null) {
+//            System.out.println(day);
+//            Date nextDay = new Date(day.getTime() + 1000 * 60 * 60 * 24);
+//            predicateList.add(criteriaBuilder.between(root.<Date>get("createdAt"), day, nextDay));
+//        }               //        // filter by date
+//        if (day != null) {
+//            System.out.println(day);
+//            Date nextDay = new Date(day.getTime() + 1000 * 60 * 60 * 24);
+//            predicateList.add(criteriaBuilder.between(root.<Date>get("createdAt"), day, nextDay));
+//        }
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class RevenueSpecification implements Specification<Revenue> {
-    private Date day;
+    Date day;
     private int sortCase;
     private boolean isAscSort;
 
@@ -27,10 +38,13 @@ public class RevenueSpecification implements Specification<Revenue> {
         List<Predicate> predicateList = new LinkedList<>();
         // filter by date
         if (day != null) {
-            System.out.println(day);
+            System.out.println(day.toString());
             Date nextDay = new Date(day.getTime() + 1000 * 60 * 60 * 24);
-            predicateList.add(criteriaBuilder.between(root.<Date>get("createdAt"), day, nextDay));
+            System.out.println(nextDay.toString());
+            predicateList.add(criteriaBuilder.between(root.get("createdAt"), day, nextDay));
         }
+
+
         // sort
         Path orderClause;
         switch (sortCase) {

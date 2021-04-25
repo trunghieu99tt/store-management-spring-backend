@@ -1,7 +1,6 @@
 package com.projects.app.models.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,9 +21,9 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Schema(description = "UserID", hidden = true)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
+    @Column(unique = true, nullable = false)
     private Long id;
 
     @NotBlank(message = "Please provide name of user")
@@ -53,4 +52,5 @@ public class User implements Serializable {
     @NotBlank(message = "Please provide role")
     @Size(min = 1, max = 100)
     private String role;
+
 }
