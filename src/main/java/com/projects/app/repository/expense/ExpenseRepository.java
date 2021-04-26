@@ -1,4 +1,4 @@
-package com.projects.app.repository;
+package com.projects.app.repository.expense;
 
 import com.projects.app.models.expense.Expense;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +9,5 @@ import java.util.List;
 
 @Repository
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
-
     List<Expense> findByDateBetween(Date start, Date from);
-
 }

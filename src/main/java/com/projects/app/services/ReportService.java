@@ -6,10 +6,10 @@ import com.projects.app.models.Revenue;
 import com.projects.app.models.expense.Expense;
 import com.projects.app.models.request.ReportDTO;
 import com.projects.app.models.user.Staff;
-import com.projects.app.repository.ExpenseRepository;
 import com.projects.app.repository.ReportRepository;
 import com.projects.app.repository.RevenueRepository;
 import com.projects.app.repository.StaffRepository;
+import com.projects.app.repository.expense.ExpenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,9 +36,11 @@ public class ReportService {
     @Autowired
     StaffRepository staffRepository;
 
-    public Page<Report> getAllReport(Date start, Date end, int pageNumber, int pageSize) {
+    public Page<Report> getAllReport(Date dateFrom, Date dateTo, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        return reportRepository.findReportByReportDateBetween(start, end, pageable);
+        if (dateFrom == null || dateTo == null)
+            return reportRepository.findAll(pageable);
+        return reportRepository.findReportByReportDateBetween(dateFrom, dateTo, pageable);
     }
 
     /**

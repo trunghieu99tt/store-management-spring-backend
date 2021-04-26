@@ -70,6 +70,7 @@ public class ReportController {
             @Valid @RequestBody ReportDTO reportDTO
     ) throws BackendError {
         Report report = reportService.parseReportDTOToReport(reportDTO);
+        report.setReportDate(new Date());
         Report newReport = reportService.add(report);
         return ResponseTool.POST_OK(newReport);
     }

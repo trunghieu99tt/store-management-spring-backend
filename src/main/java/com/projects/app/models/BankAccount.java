@@ -45,12 +45,14 @@ public class BankAccount {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
+    @JsonIgnoreProperties
     private Collection<Revenue> revenues;
 
     @OneToMany(mappedBy = "bankAccount", cascade = CascadeType.ALL)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnoreProperties
+    @JsonIgnore
     private Collection<Expense> expenses;
 
 

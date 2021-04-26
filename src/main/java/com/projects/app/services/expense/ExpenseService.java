@@ -1,11 +1,11 @@
-package com.projects.app.services;
+package com.projects.app.services.expense;
 
 import com.projects.app.common.exception.model.BackendError;
 import com.projects.app.models.BankAccount;
 import com.projects.app.models.expense.Expense;
 import com.projects.app.models.request.ExpenseDTO;
 import com.projects.app.repository.BankAccountRepository;
-import com.projects.app.repository.ExpenseRepository;
+import com.projects.app.repository.expense.ExpenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,6 @@ public class ExpenseService {
     ExpenseRepository expenseRepository;
     @Autowired
     BankAccountRepository bankAccountRepository;
-
 
     public List<Expense> getAll() {
         return expenseRepository.findAll();
@@ -35,10 +34,11 @@ public class ExpenseService {
     }
 
     public Boolean deleteOne(Long id) {
+        Expense test = getOne(id);
+        System.out.println(test.toString());
         if (getOne(id) != null) {
             expenseRepository.deleteById(id);
             return true;
-
         }
         return false;
     }
@@ -60,7 +60,6 @@ public class ExpenseService {
         } else {
             throw new BackendError(HttpStatus.BAD_REQUEST, "Số tài khoản không đúng");
         }
-
         return expense;
     }
 

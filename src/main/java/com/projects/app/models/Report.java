@@ -58,30 +58,6 @@ public class Report {
     @JoinColumn(name = "staffID")
     private Staff staff;
 
-
-    // mappedBy points to reports variable in Revenue
-//    @ManyToMany(cascade = {
-//            CascadeType.PERSIST,
-//            CascadeType.MERGE
-//    }, fetch = FetchType.LAZY)
-//    @EqualsAndHashCode.Exclude
-//    @ToString.Exclude
-//    @JoinTable(name = "report_revenue",
-//            joinColumns = @JoinColumn(name = "report_id"),
-//            inverseJoinColumns = @JoinColumn(name = "revenue_id"))
-//    private Collection<Revenue> revenues;
-//
-//    @ManyToMany(cascade = {
-//            CascadeType.PERSIST,
-//            CascadeType.MERGE
-//    }, fetch = FetchType.LAZY)
-//    @EqualsAndHashCode.Exclude
-//    @ToString.Exclude
-//    @JoinTable(name = "report_expenses",
-//            joinColumns = @JoinColumn(name = "report_id"),
-//            inverseJoinColumns = @JoinColumn(name = "expense_id"))
-//    private Collection<Expense> expenses;
-//
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "report_revenue",
             joinColumns = @JoinColumn(name = "report_id"),

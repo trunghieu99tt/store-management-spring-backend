@@ -50,7 +50,7 @@ public class Revenue {
     @Size(min = 1, max = 500, message = "Description must not be longer than 500 characters")
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "bankAccountID")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
