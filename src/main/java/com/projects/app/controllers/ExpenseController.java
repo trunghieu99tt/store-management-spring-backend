@@ -91,6 +91,15 @@ public class ExpenseController {
         }
     }
 
-
+    @ApiOperation(value = "Get statistic")
+    @GetMapping("/statistic")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<APIResponse> getStatistic(
+            @RequestParam Date dayStart,
+            @RequestParam Date dayEnd
+    ) throws BackendError {
+        List<Expense> revenues = expenseService.getStatistic(dayStart, dayEnd);
+        return ResponseTool.GET_OK(revenues);
+    }
 }
 

@@ -41,7 +41,6 @@ public class ReportController {
             @RequestParam(required = false, defaultValue = Constant.DEFAULT_PAGE_NUMBER) Integer pageNumber
     ) throws BackendError {
         try {
-
             Page<Report> reports = reportService.getAllReport(start, end
                     , pageNumber, pageSize);
             return ResponseTool.GET_OK(new ArrayList<Object>(reports.getContent()), (int) reports.getTotalElements());

@@ -66,7 +66,7 @@ public class Revenue {
     @JsonIgnore
     private Profit profit;
 
-    @ManyToMany(mappedBy = "revenues", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "revenues", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnoreProperties

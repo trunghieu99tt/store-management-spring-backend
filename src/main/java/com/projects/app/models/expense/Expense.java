@@ -53,7 +53,7 @@ public class Expense implements Serializable {
     @ToString.Exclude
     private BankAccount bankAccount;
 
-    @ManyToMany(mappedBy = "expenses")
+    @ManyToMany(mappedBy = "expenses", cascade = CascadeType.REMOVE)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore

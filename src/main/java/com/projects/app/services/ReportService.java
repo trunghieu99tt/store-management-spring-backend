@@ -38,8 +38,10 @@ public class ReportService {
 
     public Page<Report> getAllReport(Date dateFrom, Date dateTo, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        if (dateFrom == null || dateTo == null)
+        if (dateFrom == null)
             return reportRepository.findAll(pageable);
+        if (dateTo == null)
+            return reportRepository.findReportByReportDate(dateFrom, pageable);
         return reportRepository.findReportByReportDateBetween(dateFrom, dateTo, pageable);
     }
 

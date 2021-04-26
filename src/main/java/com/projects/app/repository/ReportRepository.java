@@ -12,4 +12,6 @@ import java.util.Date;
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
     Page<Report> findReportByReportDateBetween(Date start, Date end, Pageable pageable);
+
+    Page<Report> findReportByReportDate(Date date, Pageable pageable);
 }
