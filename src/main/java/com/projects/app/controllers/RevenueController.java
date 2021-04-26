@@ -48,7 +48,7 @@ public class RevenueController {
 
 
     @ApiOperation(value = "Get revenues")
-    @GetMapping("/")
+    @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<APIPagingResponse> getRevenues(
             @RequestParam(required = false) Date day,

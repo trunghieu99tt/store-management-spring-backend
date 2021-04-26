@@ -1,26 +1,31 @@
 package com.projects.app.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.projects.app.models.expense.Expense;
 import com.projects.app.models.user.Staff;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.util.Collection;
 import java.util.Date;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "report")
 public class Report {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "reportID", hidden = true)
     @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
+    @Column(unique = true)
     private Long id;
 
     @NotBlank(message = "Please provide description for Report")
@@ -40,6 +45,7 @@ public class Report {
     @Positive(message = "expense must be positive")
     private float expense;
 
+
     @NotNull
     @Positive(message = "revenue must be positive")
     private float revenue;
@@ -48,10 +54,21 @@ public class Report {
     @Positive(message = "profit must be positive")
     private float profit;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "staffID")
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private Staff staff;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "report_revenue",
+            joinColumns = @JoinColumn(name = "report_id"),
+            inverseJoinColumns = @JoinColumn(name = "revenue_id"))
+    private Collection<Revenue> revenues;
+
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "report_expense",
+            joinColumns = @JoinColumn(name = "report_id"),
+            inverseJoinColumns = @JoinColumn(name = "expense_id"))
+    private Collection<Expense> expenses;
 
 }

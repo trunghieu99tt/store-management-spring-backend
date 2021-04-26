@@ -1,8 +1,8 @@
 package com.projects.app.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.projects.app.models.user.Staff;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,18 +10,19 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.util.Collection;
 import java.util.Date;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "revenue")
 public class Revenue {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "revenueID", hidden = true)
-    @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(unique = true)
     private Long id;
 
     @NotBlank(message = "Please provide name for Revenue")
@@ -55,21 +56,21 @@ public class Revenue {
     @ToString.Exclude
     private BankAccount bankAccount;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "staffID")
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private Staff staff;
 
     @ManyToOne
-    @JoinColumn(name = "profitID")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Profit profit;
 
-    @ManyToOne
-    @JoinColumn(name = "reportID")
+    @ManyToMany(mappedBy = "revenues", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Report report;
+    @JsonIgnoreProperties
+    @JsonIgnore
+    private Collection<Report> reports;
+
 }
