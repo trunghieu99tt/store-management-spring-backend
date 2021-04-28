@@ -2,11 +2,13 @@ package com.projects.app.services;
 
 import com.projects.app.common.exception.model.BackendError;
 import com.projects.app.models.BankAccount;
+import com.projects.app.models.Report;
 import com.projects.app.models.Revenue;
 import com.projects.app.models.request.RevenueDTO;
 import com.projects.app.models.user.Staff;
 import com.projects.app.models.user.User;
 import com.projects.app.repository.BankAccountRepository;
+import com.projects.app.repository.ReportRepository;
 import com.projects.app.repository.RevenueRepository;
 import com.projects.app.repository.UserRepository;
 import com.projects.app.repository.specification.RevenueSpecification;
@@ -17,12 +19,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class RevenueService {
@@ -35,6 +36,9 @@ public class RevenueService {
 
     @Autowired
     private BankAccountRepository bankAccountRepository;
+
+    @Autowired
+    private ReportRepository reportRepository;
 
     /**
      * @param day        day to filter
@@ -88,8 +92,22 @@ public class RevenueService {
      * @param revenueID - id of revenue item need to be deleted
      * @return boolean - true if delete successfully, false otherwise
      */
+    @Transactional
     public boolean deleteRevenue(Long revenueID) {
-        if (getRevenue(revenueID) != null) {
+        Revenue revenue = getRevenue(revenueID);
+        if (revenue != null) {
+            // After remove revenue, we should delete that revenue in all reports
+            revenue.getReports().forEach(r -> r.getRevenues().remove(revenue));
+            Collection<Report> newReports = new ArrayList<>();
+            revenue.getReports().forEach(r -> {
+                r.getRevenues().remove(revenue);
+                if (r.getExpenses().size() == 0 && r.getRevenues().size() == 0) {
+                    reportRepository.delete(r);
+                } else {
+                    newReports.add(r);
+                }
+            });
+            reportRepository.saveAll(newReports);
             revenueRepository.deleteById(revenueID);
             return true;
         }
@@ -121,7 +139,8 @@ public class RevenueService {
         if (staff.isPresent()) {
             revenue.setStaff((Staff) staff.get());
         } else {
-            throw new BackendError(HttpStatus.BAD_REQUEST, "Invalid staff ID");
+            throw new BackendError(HttpStatus.BAD_REQUEST, "Nhân viên đang thực hiện thao tac khong ton tai trong he " +
+                    "thong");
         }
         return revenue;
     }

@@ -72,10 +72,14 @@ public class ReportService {
         List<Expense> expenses = expenseRepository.findByDateBetween(dateFrom, dateTo);
         reportDTO.setExpenses(expenses);
         reportDTO.setRevenues(revenues);
-        float revenueTotal = 0;
+        float totalRevenue = 0;
         for (Revenue r : revenues) {
-            revenueTotal += r.getTotal();
-            System.out.println("r from getInfo: " + r.toString());
+            totalRevenue += r.getTotal();
+        }
+        reportDTO.setRevenue(totalRevenue);
+        float totalExpense = 0;
+        for (Expense e : expenses) {
+            totalExpense += e.getTotal();
         }
         // TODO: get actual profit
         reportDTO.setStaffID(staffID);
@@ -83,7 +87,7 @@ public class ReportService {
         reportDTO.setDateFrom(dateFrom);
         reportDTO.setDateTo(dateTo);
         reportDTO.setDescription("");
-        reportDTO.setRevenue(revenueTotal);
+        reportDTO.setExpense(totalExpense);
         return reportDTO;
     }
 
@@ -104,9 +108,6 @@ public class ReportService {
         report.setDescription(reportDTO.getDescription());
         report.setRevenue(reportDTO.getRevenue());
         List<Revenue> temp = (List<Revenue>) reportDTO.getRevenues();
-        for (Revenue r : temp) {
-            System.out.println("r from parse : " + r.toString());
-        }
         report.setExpenses(reportDTO.getExpenses());
         report.setRevenues(reportDTO.getRevenues());
         Optional<Staff> staff = staffRepository.findById(staffID);
@@ -124,6 +125,25 @@ public class ReportService {
      */
     public Report getReport(Long reportID) {
         Optional<Report> report = reportRepository.findById(reportID);
+        if (report.isPresent()) {
+            float totalRevenue = 0;
+            float totalExpense = 0;
+            List<Revenue> revenues = (List<Revenue>) report.get().getRevenues();
+            for (Revenue r : revenues) {
+                totalRevenue += r.getTotal();
+            }
+            List<Expense> expenses = (List<Expense>) report.get().getExpenses();
+            for (Expense e : expenses) {
+                totalExpense += e.getTotal();
+            }
+            report.get().setRevenue(totalRevenue);
+            report.get().setExpense(totalExpense);
+            if (revenues.size() == 0 && expenses.size() == 0) {
+                reportRepository.delete(report.get());
+                return null;
+            }
+            reportRepository.save(report.get());
+        }
         return report.orElse(null);
     }
 

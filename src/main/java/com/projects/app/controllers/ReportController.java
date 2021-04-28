@@ -80,7 +80,7 @@ public class ReportController {
     public ResponseEntity<APIResponse> getReport(@PathVariable(name = "reportID") long reportID) throws BackendError {
         Report report = reportService.getReport(reportID);
         if (report == null) {
-            String message = "Invalid revenue ID";
+            String message = "Report không tồn tại hoặc đã bị xóa khỏi cơ sở dữ liệu";
             throw new BackendError(HttpStatus.BAD_REQUEST, message);
         }
         return ResponseTool.GET_OK(report);

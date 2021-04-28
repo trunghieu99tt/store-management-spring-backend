@@ -26,7 +26,7 @@ public class Revenue {
     private Long id;
 
     @NotBlank(message = "Please provide name for Revenue")
-    @Size(min = 1, max = 500, message = "Name must not be longer than 500 characters")
+    @Size(min = 1, max = 1000, message = "Name must not be longer than 500 characters")
     private String name;
 
     @NotNull
@@ -66,7 +66,7 @@ public class Revenue {
     @JsonIgnore
     private Profit profit;
 
-    @ManyToMany(mappedBy = "revenues", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToMany(mappedBy = "revenues", fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnoreProperties
