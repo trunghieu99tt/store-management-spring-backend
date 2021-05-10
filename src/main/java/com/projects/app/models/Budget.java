@@ -1,25 +1,28 @@
 package com.projects.app.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.projects.app.models.user.Manager;
+import com.projects.app.models.user.Staff;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Collection;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Budget {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Budget implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,4 +41,15 @@ public class Budget {
     @NotBlank(message = "Please provide name for Budget")
     @Size(min = 1, max = 500, message = "Name must not be longer than 500 characters")
     private String name;
+
+    @ManyToOne()
+    @JoinColumn(name = "manageID")
+    private Manager manager;
+
+    @ManyToMany(mappedBy = "budgets", fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIgnoreProperties
+    @JsonIgnore
+    private Collection<Report> reports;
 }
