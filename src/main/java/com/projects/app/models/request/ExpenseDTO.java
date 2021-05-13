@@ -1,16 +1,15 @@
 package com.projects.app.models.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.projects.app.models.BankAccount;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,4 +32,7 @@ public class ExpenseDTO {
     private String paymentMethod;
     @NotNull
     private String bankAccountNumber;
+
+    @NotNull
+    private Long staffID;
 }

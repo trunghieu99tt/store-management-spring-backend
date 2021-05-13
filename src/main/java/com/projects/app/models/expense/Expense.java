@@ -1,9 +1,11 @@
 package com.projects.app.models.expense;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.projects.app.models.BankAccount;
 import com.projects.app.models.Profit;
 import com.projects.app.models.Report;
+import com.projects.app.models.user.Staff;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -12,18 +14,21 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Expense {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Expense implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     @Schema(description = "expenseID", hidden = true)
-    @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @NotNull
@@ -48,16 +53,21 @@ public class Expense {
     @ToString.Exclude
     private BankAccount bankAccount;
 
-    @ManyToOne
-    @JoinColumn(name = "reportID")
+    @ManyToMany(mappedBy = "expenses")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Report report;
+    @JsonIgnore
+    @JsonIgnoreProperties
+    private Collection<Report> reports;
 
     @ManyToOne
-    @JoinColumn(name = "profitID")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Profit profit;
+
+    @ManyToOne()
+    @JoinColumn(name = "staffID")
+    private Staff staff;
 }
 
