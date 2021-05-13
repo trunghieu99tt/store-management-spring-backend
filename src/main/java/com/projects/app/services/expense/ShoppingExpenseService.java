@@ -30,7 +30,7 @@ public class ShoppingExpenseService {
         return shoppingExpenseRepository.save(ex);
     }
 
-    public ShoppingExpense updateOne(ShoppingExpense ex) {
+    public ShoppingExpense buupdateOne(ShoppingExpense ex) {
         return shoppingExpenseRepository.save(ex);
     }
 

@@ -71,4 +71,10 @@ public class Report {
             inverseJoinColumns = @JoinColumn(name = "expense_id"))
     private Collection<Expense> expenses;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "report_budget",
+            joinColumns = @JoinColumn(name = "report_id"),
+            inverseJoinColumns = @JoinColumn(name = "budget_id"))
+    private Collection<Budget> budgets;
+
 }
