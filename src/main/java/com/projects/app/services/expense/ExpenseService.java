@@ -57,6 +57,7 @@ public class ExpenseService {
                 }
             });
             reportRepository.saveAll(newReports);
+//            reportRepository.saveAll(expense.getReports());
             expenseRepository.deleteById(id);
             return true;
         }

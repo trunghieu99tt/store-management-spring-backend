@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+@CrossOrigin(maxAge = 3600)
 @RestController
 @RequestMapping("/api/v1/revenue")
 @RequiredArgsConstructor
@@ -115,7 +115,7 @@ public class RevenueController {
 
 
     @ApiOperation(value = "Create revenue")
-    @PostMapping("/")
+    @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<APIResponse> createTodo(
             @Parameter(description = "Todo model to create", required = true,

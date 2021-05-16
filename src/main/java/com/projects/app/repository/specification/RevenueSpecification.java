@@ -43,8 +43,6 @@ public class RevenueSpecification implements Specification<Revenue> {
             System.out.println(nextDay.toString());
             predicateList.add(criteriaBuilder.between(root.get("createdAt"), day, nextDay));
         }
-
-
         // sort
         Path orderClause;
         switch (sortCase) {
@@ -67,9 +65,6 @@ public class RevenueSpecification implements Specification<Revenue> {
         } else {
             criteriaQuery.orderBy(criteriaBuilder.desc(orderClause));
         }
-
         return criteriaBuilder.and(predicateList.toArray(new Predicate[]{}));
-
-
     }
 }
