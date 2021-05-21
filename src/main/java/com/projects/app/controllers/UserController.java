@@ -43,9 +43,11 @@ public class UserController {
     @PostMapping("/login")
     @Operation(description = "Login")
     public ResponseEntity<APIResponse> login(@RequestBody LoginDTO user) throws BackendError {
+        System.out.println(user.toString());
         Authentication authentication =
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(),
                         user.getPassword()));
+        System.out.println("Auth:  " + authentication.getAuthorities().toString());
         SecurityContextHolder.getContext().
                 setAuthentication(authentication);
         String jwt = jwtTokenProvider.generateToken((CustomUserDetail) authentication.getPrincipal());
@@ -54,14 +56,14 @@ public class UserController {
         return ResponseTool.POST_OK(loginResponse);
     }
 
-    @PostMapping("/register/staff")
+    @PostMapping("/staff/create")
     @Operation(description = "Create account")
     public ResponseEntity<APIResponse> register(@Valid @RequestBody Staff staff) throws BackendError {
         Staff newStaff = userService.createStaff(staff);
         return ResponseTool.POST_OK(newStaff);
     }
 
-    @PostMapping("/register/manager")
+    @PostMapping("/manager/create")
     @Operation(description = "Create account")
     public ResponseEntity<APIResponse> register(@RequestBody Manager manager) throws BackendError {
         System.out.println("Go here");

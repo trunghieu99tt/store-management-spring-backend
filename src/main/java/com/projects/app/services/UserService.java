@@ -33,8 +33,6 @@ public class UserService implements UserDetailsService {
 
     public User getUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.getUserByUsername(username);
-        System.out.println("username: " + username);
-        System.out.println("user : " + user.toString());
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
@@ -42,7 +40,8 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username
+    ) throws UsernameNotFoundException {
         User user = this.getUserByUsername(username);
         return new CustomUserDetail(user);
     }

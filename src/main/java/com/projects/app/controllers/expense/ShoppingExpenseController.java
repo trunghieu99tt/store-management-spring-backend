@@ -47,22 +47,22 @@ public class ShoppingExpenseController {
         return ResponseTool.POST_OK(newShoppingExpense);
     }
 
-//    @ApiOperation(value = "update a expense")
-//    @PutMapping("/{shoppingExpenseID}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public ResponseEntity<APIResponse> updateServiceExpense(
-//            @PathVariable(name = "shoppingExpenseID") long shoppingExpenseID,
-//            @Valid @RequestBody ShoppingExpenseDTO shoppingExpenseDTO
-//    ) throws BackendError {
-//        Expense expenseDB = expenseService.getOne(shoppingExpenseID);
-//        if (expenseDB == null) {
-//            String message = "Invalid expenseID ID";
-//            throw new BackendError(HttpStatus.BAD_REQUEST, message);
-//        }
-//        ShoppingExpense shoppingExpense =
-//                shoppingExpenseService.parseExpenseServiceDTOToExpenseService(shoppingExpenseDTO);
-//        shoppingExpense.setDate(expenseDB.getDate());
-//        shoppingExpense.setId(shoppingExpenseID);
-////        return ResponseTool.PUT_OK(shoppingExpenseService.updateOne(shoppingExpense));
-////    }
+    @ApiOperation(value = "update a expense")
+    @PutMapping("/{shoppingExpenseID}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<APIResponse> updateServiceExpense(
+            @PathVariable(name = "shoppingExpenseID") long shoppingExpenseID,
+            @Valid @RequestBody ShoppingExpenseDTO shoppingExpenseDTO
+    ) throws BackendError {
+        Expense expenseDB = expenseService.getOne(shoppingExpenseID);
+        if (expenseDB == null) {
+            String message = "Invalid expenseID ID";
+            throw new BackendError(HttpStatus.BAD_REQUEST, message);
+        }
+        ShoppingExpense shoppingExpense =
+                shoppingExpenseService.parseExpenseServiceDTOToExpenseService(shoppingExpenseDTO);
+        shoppingExpense.setDate(expenseDB.getDate());
+        shoppingExpense.setId(shoppingExpenseID);
+        return ResponseTool.PUT_OK(shoppingExpenseService.updateOne(shoppingExpense));
+    }
 }

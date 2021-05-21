@@ -27,5 +27,5 @@ public class BudgetDTO {
     private String name;
 
     @NotNull
-    private long manageID;
+    private long managerID;
 }
