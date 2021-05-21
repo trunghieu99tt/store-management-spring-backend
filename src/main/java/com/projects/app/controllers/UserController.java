@@ -11,10 +11,12 @@ import com.projects.app.models.user.Staff;
 import com.projects.app.models.user.User;
 import com.projects.app.services.UserService;
 import com.projects.app.utils.jwt.JwtTokenProvider;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -56,18 +59,16 @@ public class UserController {
         return ResponseTool.POST_OK(loginResponse);
     }
 
-    @PostMapping("/staff/create")
-    @Operation(description = "Create account")
-    public ResponseEntity<APIResponse> register(@Valid @RequestBody Staff staff) throws BackendError {
+    @PostMapping("/staff")
+    @Operation(description = "Create staff account")
+    public ResponseEntity<APIResponse> registerStaff(@Valid @RequestBody Staff staff) throws BackendError {
         Staff newStaff = userService.createStaff(staff);
         return ResponseTool.POST_OK(newStaff);
     }
 
-    @PostMapping("/manager/create")
-    @Operation(description = "Create account")
-    public ResponseEntity<APIResponse> register(@RequestBody Manager manager) throws BackendError {
-        System.out.println("Go here");
-        System.out.println(manager.getPassword());
+    @PostMapping("/manager")
+    @Operation(description = "Create manager account")
+    public ResponseEntity<APIResponse> registerManager(@RequestBody Manager manager) throws BackendError {
         Manager newManager = userService.createManager(manager);
         return ResponseTool.POST_OK(newManager);
     }
@@ -82,4 +83,38 @@ public class UserController {
         User user = userService.getUserByUsername(authentication.getName());
         return ResponseTool.GET_OK(user);
     }
+
+    @GetMapping("")
+    @Operation(description = "Get users", summary = "Get users", security = @SecurityRequirement(name =
+            "bearerAuth"))
+    @PreAuthorize("@EndpointAuthorizer.authorizer({'admin'})")
+    public ResponseEntity<APIResponse> getUsers() {
+        List<User> expense = userService.getAll();
+        return ResponseTool.GET_OK(expense);
+    }
+
+    @GetMapping("/{userID}")
+    public ResponseEntity<APIResponse> getExpense(@PathVariable(name = "userID") long userID) throws BackendError {
+        User user = userService.getOne(userID);
+        if (user == null) {
+            String message = "Invalid user ID";
+            throw new BackendError(HttpStatus.BAD_REQUEST, message);
+        }
+        return ResponseTool.GET_OK(user);
+    }
+
+    @ApiOperation(value = "delete an user")
+    @DeleteMapping("/{userID}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<APIResponse> deleteRevenue(
+            @PathVariable(name = "userID") long userID
+    ) throws BackendError {
+        boolean ok = userService.deleteOne(userID);
+        if (ok) {
+            return ResponseTool.DELETE_OK();
+        } else {
+            throw new BackendError(HttpStatus.BAD_REQUEST, "There is no user  with this id");
+        }
+    }
+
 }

@@ -16,6 +16,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class UserService implements UserDetailsService {
 
@@ -54,7 +58,9 @@ public class UserService implements UserDetailsService {
         try {
             staff = staffRepository.save(staff);
             staff.setPassword(null);
+            userRepository.save(staff);
         } catch (Exception e) {
+            System.out.println("error " + e);
             e.printStackTrace();
         }
         return staff;
@@ -72,5 +78,25 @@ public class UserService implements UserDetailsService {
             e.printStackTrace();
         }
         return manager;
+    }
+
+    public List<User> getAll() {
+        return userRepository.findAll();
+    }
+
+    public User getOne(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        return user.orElse(null);
+    }
+
+
+    @Transactional
+    public Boolean deleteOne(Long id) {
+        User user = getOne(id);
+        if (user != null) {
+            userRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
