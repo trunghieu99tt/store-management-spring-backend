@@ -26,6 +26,16 @@ public class BudgetDTO {
     @Size(min = 1, max = 500, message = "Name must not be longer than 500 characters")
     private String name;
 
+
+    @NotNull
+    @Positive(message = "month must be positive")
+    private int month;
+
+    @NotNull
+    @Positive(message = "year must be positive")
+    private int year;
+
+
     @NotNull
     private long managerID;
 }

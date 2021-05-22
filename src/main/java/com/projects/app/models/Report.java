@@ -54,9 +54,15 @@ public class Report {
     @Positive(message = "profit must be positive")
     private float profit;
 
+    @NotNull
+    @Positive(message = "totalBudget must be positive")
+    private float budget;
+
+
     @ManyToOne()
     @JoinColumn(name = "staffID")
     private Staff staff;
+
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "report_revenue",
@@ -76,5 +82,4 @@ public class Report {
             joinColumns = @JoinColumn(name = "report_id"),
             inverseJoinColumns = @JoinColumn(name = "budget_id"))
     private Collection<Budget> budgets;
-
 }

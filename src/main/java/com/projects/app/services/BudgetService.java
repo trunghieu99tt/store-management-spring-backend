@@ -53,7 +53,9 @@ public class BudgetService {
             Collection<Report> newReports = new ArrayList<>();
             budget.getReports().forEach(report -> {
                 report.getBudgets().remove(budget);
-                if (report.getRevenues().size() == 0 && report.getExpenses().size() == 0 && report.getBudgets().size() == 0) {
+                report.setBudget(report.getBudget() - budget.getTotal());
+                if (report.getRevenues().size() == 0 && report.getExpenses().size() == 0 && report.getBudgets()
+                        .size() == 0) {
                     reportRepository.delete(report);
                 } else {
                     newReports.add(report);
@@ -71,6 +73,8 @@ public class BudgetService {
         budget.setDescription(budgetDTO.getDescription());
         budget.setName(budgetDTO.getName());
         budget.setTotal(budgetDTO.getTotal());
+        budget.setMonth(budgetDTO.getMonth());
+        budget.setYear(budgetDTO.getYear());
         Optional<User> manage = userRepository.findById(budgetDTO.getManagerID());
         if (manage.isPresent()) {
             budget.setManager((Manager) manage.get());
@@ -78,6 +82,9 @@ public class BudgetService {
             throw new BackendError(HttpStatus.BAD_REQUEST, "Không tồn tại người quản lí này");
         }
         return budget;
+    }
 
+    public Budget getBudgetByMonthAndYear(int month, int year) {
+        return budgetRepository.findBudgetByMonthAndYear(month, year);
     }
 }
