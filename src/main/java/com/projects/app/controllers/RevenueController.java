@@ -102,7 +102,6 @@ public class RevenueController {
             throw new BackendError(HttpStatus.BAD_REQUEST, message);
         }
         Revenue revenue = revenueService.parseRevenueDTOToRevenue(revenueDTO);
-        revenue.setCreatedAt(revenueDB.getCreatedAt());
         revenue.setId(revenueID);
         return ResponseTool.PUT_OK(revenueService.updateRevenue(revenue));
     }
