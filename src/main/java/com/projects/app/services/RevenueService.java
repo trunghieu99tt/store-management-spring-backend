@@ -54,6 +54,13 @@ public class RevenueService {
         return revenueRepository.findAll(revenueSpecification, pageable);
     }
 
+    /**
+     * @return
+     */
+    public List<Revenue> getAll() {
+        return revenueRepository.findAll();
+    }
+
 
     /**
      * create new revenue
@@ -141,6 +148,11 @@ public class RevenueService {
         } else {
             throw new BackendError(HttpStatus.BAD_REQUEST, "Nhân viên đang thực hiện thao tac khong ton tai trong he " +
                     "thong");
+        }
+        if (revenueDTO.getCreatedAt() != null) {
+            revenue.setCreatedAt(revenueDTO.getCreatedAt());
+        } else {
+            revenue.setCreatedAt(new Date());
         }
         return revenue;
     }

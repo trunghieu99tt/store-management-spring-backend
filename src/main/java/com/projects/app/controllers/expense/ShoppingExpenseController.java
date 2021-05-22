@@ -19,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
@@ -42,7 +41,6 @@ public class ShoppingExpenseController {
             throws BackendError {
         ShoppingExpense shoppingExpense =
                 shoppingExpenseService.parseExpenseServiceDTOToExpenseService(shoppingExpenseDTO);
-        shoppingExpense.setDate(new Date());
         ShoppingExpense newShoppingExpense = shoppingExpenseService.createOne(shoppingExpense);
         return ResponseTool.POST_OK(newShoppingExpense);
     }
@@ -61,7 +59,6 @@ public class ShoppingExpenseController {
         }
         ShoppingExpense shoppingExpense =
                 shoppingExpenseService.parseExpenseServiceDTOToExpenseService(shoppingExpenseDTO);
-        shoppingExpense.setDate(expenseDB.getDate());
         shoppingExpense.setId(shoppingExpenseID);
         return ResponseTool.PUT_OK(shoppingExpenseService.updateOne(shoppingExpense));
     }

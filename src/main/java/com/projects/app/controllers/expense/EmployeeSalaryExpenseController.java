@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
@@ -41,7 +40,6 @@ public class EmployeeSalaryExpenseController {
             throws BackendError {
         EmployeeSalaryExpense employeeSalaryExpense =
                 employeeSalaryService.parseExpenseServiceDTOToExpenseService(employeeSalaryExpenseDTO);
-        employeeSalaryExpense.setDate(new Date());
         EmployeeSalaryExpense newEmployeeSalaryExpense = employeeSalaryService.createOne(employeeSalaryExpense);
         return ResponseTool.POST_OK(newEmployeeSalaryExpense);
     }
@@ -60,7 +58,6 @@ public class EmployeeSalaryExpenseController {
         }
         EmployeeSalaryExpense employeeSalaryExpense =
                 employeeSalaryService.parseExpenseServiceDTOToExpenseService(employeeSalaryExpenseDTO);
-        employeeSalaryExpense.setDate(expenseDB.getDate());
         employeeSalaryExpense.setId(employeeSalaryExpenseID);
         return ResponseTool.PUT_OK(employeeSalaryService.updateOne(employeeSalaryExpense));
     }

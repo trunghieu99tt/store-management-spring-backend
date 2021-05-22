@@ -67,6 +67,14 @@ public class RevenueController {
     }
 
     @ApiOperation(value = "Get revenue by id")
+    @GetMapping("/getAll")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<APIResponse> getAllRevenue() throws BackendError {
+        return ResponseTool.GET_OK(revenueService.getAll());
+    }
+
+
+    @ApiOperation(value = "Get revenue by id")
     @GetMapping("/{revenueID}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<APIResponse> getRevenue(
@@ -124,7 +132,6 @@ public class RevenueController {
             @Valid @RequestBody RevenueDTO revenueDTO)
             throws BackendError {
         Revenue revenue = revenueService.parseRevenueDTOToRevenue(revenueDTO);
-        revenue.setCreatedAt(new Date());
         Revenue newRevenue = revenueService.add(revenue);
         return ResponseTool.POST_OK(newRevenue);
     }
