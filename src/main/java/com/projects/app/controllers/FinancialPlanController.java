@@ -79,4 +79,9 @@ public class FinancialPlanController {
         }
     }
 
+    @GetMapping("financialForecasting")
+    public ResponseEntity<APIResponse> getFinancialForecasting() throws BackendError {
+        return ResponseTool.DELETE_OK();
+    }
+
 }
