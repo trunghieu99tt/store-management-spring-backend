@@ -6,7 +6,6 @@ import com.projects.app.common.response.model.APIResponse;
 import com.projects.app.models.Budget;
 import com.projects.app.models.request.BudgetDTO;
 import com.projects.app.services.BudgetService;
-import com.projects.app.services.expense.ExpenseService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -42,16 +41,20 @@ public class BudgetController {
                     schema = @Schema(implementation = BudgetDTO.class))
             @Valid @RequestBody BudgetDTO budgetDTO) throws BackendError {
         Budget budget = budgetService.parseBudgetDTOToBudget(budgetDTO);
+        Budget budgetDB = budgetService.getBudgetByMonthAndYear(budgetDTO.getMonth(), budgetDTO.getYear());
+        if (budgetDB != null) {
+            throw new BackendError(HttpStatus.BAD_REQUEST, "Đã tồn tại ngân sách của tháng này");
+        }
         Budget newBudget = budgetService.createOne(budget);
         return ResponseTool.POST_OK(newBudget);
     }
 
     // get one budget by id
     @GetMapping("/{budgetID}")
-    public ResponseEntity<APIResponse> getBudgetById(@PathVariable(name = "budgetID") long budgetId) throws BackendError{
+    public ResponseEntity<APIResponse> getBudgetById(@PathVariable(name = "budgetID") long budgetId) throws BackendError {
         Budget budget = budgetService.getOne(budgetId);
-        if(budget==null){
-            throw new BackendError(HttpStatus.BAD_REQUEST,"Invalid budget ID");
+        if (budget == null) {
+            throw new BackendError(HttpStatus.BAD_REQUEST, "Invalid budget ID");
         }
         return ResponseTool.GET_OK(budget);
     }
@@ -59,13 +62,17 @@ public class BudgetController {
     //update one budget by id
     @ApiOperation(value = "Update a Budget")
     @PutMapping("/{budgetID}")
-    public ResponseEntity<APIResponse> updateBudget(@PathVariable(name="budgetID") long budgetID, @Valid @RequestBody BudgetDTO budgetDTO) throws  BackendError{
+    public ResponseEntity<APIResponse> updateBudget(@PathVariable(name = "budgetID") long budgetID,
+                                                    @Valid @RequestBody BudgetDTO budgetDTO) throws BackendError {
         Budget budget = budgetService.getOne(budgetID);
-        if(budget==null){
-            throw new BackendError(HttpStatus.BAD_REQUEST,"Invalid budget ID");
+        if (budget == null) {
+            throw new BackendError(HttpStatus.BAD_REQUEST, "Invalid budget ID");
+        }
+        Budget budgetDB = budgetService.getBudgetByMonthAndYear(budgetDTO.getMonth(), budgetDTO.getYear());
+        if (budgetDB.getId() != budgetID) {
+            throw new BackendError(HttpStatus.BAD_REQUEST, "Đã tồn tại ngân sách của tháng này");
         }
         Budget newBudget = budgetService.parseBudgetDTOToBudget(budgetDTO);
-
         newBudget.setId(budget.getId());//can't change ID
         return ResponseTool.PUT_OK(budgetService.updateOne(newBudget));
     }
@@ -73,13 +80,13 @@ public class BudgetController {
     //delete one budget by id
     @ApiOperation(value = "delete a budget")
     @DeleteMapping("/{budgetID}")
-
-    public ResponseEntity<APIResponse> deleteBudget(@PathVariable(name = "budgetID") long budgetID) throws BackendError{
+    public ResponseEntity<APIResponse> deleteBudget(@PathVariable(name = "budgetID") long budgetID) throws
+            BackendError {
         boolean checkDelete = budgetService.deleteOne(budgetID);
-        if(checkDelete){
+        if (checkDelete) {
             return ResponseTool.DELETE_OK();
-        }else{
-            throw new BackendError(HttpStatus.BAD_REQUEST,"Invalid budget");
+        } else {
+            throw new BackendError(HttpStatus.BAD_REQUEST, "Invalid budget");
         }
     }
 

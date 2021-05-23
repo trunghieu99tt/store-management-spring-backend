@@ -1,6 +1,7 @@
 package com.projects.app.models.request;
 
 
+import com.projects.app.models.Budget;
 import com.projects.app.models.Revenue;
 import com.projects.app.models.expense.Expense;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,13 @@ public class ReportDTO {
 
     @NotNull
     private Collection<Expense> expenses;
+
+
+    @NotNull
+    private Collection<Budget> budgets;
+
+    @NotNull
+    private float budget;
 
     @NotNull
     private float expense;

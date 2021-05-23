@@ -1,4 +1,4 @@
-package com.projects.app.repository;
+package com.projects.app.repository.user;
 
 import com.projects.app.models.user.Staff;
 import org.springframework.data.jpa.repository.JpaRepository;

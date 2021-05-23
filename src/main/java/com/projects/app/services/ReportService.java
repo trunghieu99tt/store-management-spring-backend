@@ -1,15 +1,17 @@
 package com.projects.app.services;
 
 import com.projects.app.common.exception.model.BackendError;
+import com.projects.app.models.Budget;
 import com.projects.app.models.Report;
 import com.projects.app.models.Revenue;
 import com.projects.app.models.expense.Expense;
 import com.projects.app.models.request.ReportDTO;
 import com.projects.app.models.user.Staff;
+import com.projects.app.repository.BudgetRepository;
 import com.projects.app.repository.ReportRepository;
 import com.projects.app.repository.RevenueRepository;
-import com.projects.app.repository.StaffRepository;
 import com.projects.app.repository.expense.ExpenseRepository;
+import com.projects.app.repository.user.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +38,10 @@ public class ReportService {
     @Autowired
     StaffRepository staffRepository;
 
+    @Autowired
+    BudgetRepository budgetRepository;
+
+
     public Page<Report> getAllReport(Date dateFrom, Date dateTo, int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         if (dateFrom == null)
@@ -52,7 +58,6 @@ public class ReportService {
      * @return report returned report from backend
      */
     public Report add(Report report) {
-        System.out.println(report.toString());
         report.setId((long) (Math.random() * 1000));
         return reportRepository.save(report);
     }
@@ -70,6 +75,8 @@ public class ReportService {
         List<Revenue> revenues = revenueRepository.getRevenueByCreatedAtBetween(dateFrom, dateTo
         );
         List<Expense> expenses = expenseRepository.findByDateBetween(dateFrom, dateTo);
+        List<Budget> budgets = budgetRepository.findAll();
+        reportDTO.setBudgets(budgets);
         reportDTO.setExpenses(expenses);
         reportDTO.setRevenues(revenues);
         float totalRevenue = 0;
@@ -81,13 +88,19 @@ public class ReportService {
         for (Expense e : expenses) {
             totalExpense += e.getTotal();
         }
-        // TODO: get actual profit
+        float totalBudget = 0;
+        for (Budget b : budgets) {
+            System.out.println(b.toString());
+            totalBudget += b.getTotal();
+        }
         reportDTO.setStaffID(staffID);
+        // TODO: get actual profit
         reportDTO.setProfit(0);
         reportDTO.setDateFrom(dateFrom);
         reportDTO.setDateTo(dateTo);
         reportDTO.setDescription("");
         reportDTO.setExpense(totalExpense);
+        reportDTO.setBudget(totalBudget);
         return reportDTO;
     }
 
@@ -107,14 +120,15 @@ public class ReportService {
         report.setReportTo(reportDTO.getDateTo());
         report.setDescription(reportDTO.getDescription());
         report.setRevenue(reportDTO.getRevenue());
-        List<Revenue> temp = (List<Revenue>) reportDTO.getRevenues();
         report.setExpenses(reportDTO.getExpenses());
         report.setRevenues(reportDTO.getRevenues());
+        report.setBudget(reportDTO.getBudget());
+        report.setBudgets(reportDTO.getBudgets());
         Optional<Staff> staff = staffRepository.findById(staffID);
         if (staff.isPresent()) {
             report.setStaff(staff.get());
         } else {
-            throw new BackendError(HttpStatus.BAD_REQUEST, "Thông tin staff không đúng");
+            throw new BackendError(HttpStatus.BAD_REQUEST, "Thông tin user không đúng");
         }
         return report;
     }
@@ -123,11 +137,12 @@ public class ReportService {
      * @param reportID
      * @return
      */
-    public Report getReport(Long reportID) {
+    public Report getReportById(Long reportID) {
         Optional<Report> report = reportRepository.findById(reportID);
         if (report.isPresent()) {
             float totalRevenue = 0;
             float totalExpense = 0;
+            float totalBudget = 0;
             List<Revenue> revenues = (List<Revenue>) report.get().getRevenues();
             for (Revenue r : revenues) {
                 totalRevenue += r.getTotal();
@@ -136,9 +151,15 @@ public class ReportService {
             for (Expense e : expenses) {
                 totalExpense += e.getTotal();
             }
+            List<Budget> budgets = (List<Budget>) report.get().getBudgets();
+            for (Budget b : budgets) {
+                System.out.println(b.toString());
+                totalBudget += b.getTotal();
+            }
+
             report.get().setRevenue(totalRevenue);
             report.get().setExpense(totalExpense);
-            if (revenues.size() == 0 && expenses.size() == 0) {
+            if (revenues.size() == 0 && expenses.size() == 0 && budgets.size() == 0) {
                 reportRepository.delete(report.get());
                 return null;
             }

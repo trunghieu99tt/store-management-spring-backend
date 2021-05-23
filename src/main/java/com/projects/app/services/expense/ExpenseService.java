@@ -57,6 +57,7 @@ public class ExpenseService {
                 }
             });
             reportRepository.saveAll(newReports);
+//            reportRepository.saveAll(expense.getReports());
             expenseRepository.deleteById(id);
             return true;
         }
@@ -69,6 +70,7 @@ public class ExpenseService {
 
     public Expense parseExpenseDTOToExpense(ExpenseDTO expenseDTO) throws BackendError {
         Expense expense = new Expense();
+        System.out.println("date: " + expenseDTO.getDate());
         expense.setDate(expenseDTO.getDate());
         expense.setPaymentMethod(expenseDTO.getPaymentMethod());
         expense.setDescription(expenseDTO.getDescription());

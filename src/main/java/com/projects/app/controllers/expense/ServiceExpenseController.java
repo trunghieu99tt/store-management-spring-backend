@@ -18,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RestController
@@ -40,7 +39,6 @@ public class ServiceExpenseController {
             @Valid @RequestBody ServiceExpenseDTO serviceExpenseDTO)
             throws BackendError {
         ServiceExpense serviceExpense = serviceExpenseService.parseExpenseServiceDTOToExpenseService(serviceExpenseDTO);
-        serviceExpense.setDate(new Date());
         ServiceExpense newServiceExpense = serviceExpenseService.createOne(serviceExpense);
         return ResponseTool.POST_OK(newServiceExpense);
     }
@@ -58,7 +56,6 @@ public class ServiceExpenseController {
             throw new BackendError(HttpStatus.BAD_REQUEST, message);
         }
         ServiceExpense serviceExpense = serviceExpenseService.parseExpenseServiceDTOToExpenseService(serviceExpenseDTO);
-        serviceExpense.setDate(expenseDB.getDate());
         serviceExpense.setId(serviceExpenseID);
         return ResponseTool.PUT_OK(serviceExpenseService.updateOne(serviceExpense));
     }

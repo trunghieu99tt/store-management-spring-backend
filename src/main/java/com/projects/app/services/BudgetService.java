@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,31 +29,35 @@ public class BudgetService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<Budget> getAll(){
+    public List<Budget> getAll() {
         return budgetRepository.findAll();
     }
-    public Budget getOne(Long id){
+
+    public Budget getOne(Long id) {
         Optional<Budget> budget = budgetRepository.findById(id);
         return budget.orElse(null);
     }
-    public Budget createOne(Budget budget){
+
+    public Budget createOne(Budget budget) {
         return budgetRepository.save(budget);
     }
 
-    public Budget updateOne(Budget budget){
+    public Budget updateOne(Budget budget) {
         return budgetRepository.save(budget);
     }
 
     @Transactional
-    public Boolean deleteOne(Long id){
+    public Boolean deleteOne(Long id) {
         Budget budget = getOne(id);
-        if(budget != null){
+        if (budget != null) {
             Collection<Report> newReports = new ArrayList<>();
             budget.getReports().forEach(report -> {
                 report.getBudgets().remove(budget);
-                if(report.getRevenues().size()==0 && report.getExpenses().size()==0 && report.getBudgets().size()==0){
+                report.setBudget(report.getBudget() - budget.getTotal());
+                if (report.getRevenues().size() == 0 && report.getExpenses().size() == 0 && report.getBudgets()
+                        .size() == 0) {
                     reportRepository.delete(report);
-                }else{
+                } else {
                     newReports.add(report);
                 }
             });
@@ -65,18 +67,24 @@ public class BudgetService {
         }
         return false;
     }
-    public Budget parseBudgetDTOToBudget(BudgetDTO budgetDTO) throws BackendError{
+
+    public Budget parseBudgetDTOToBudget(BudgetDTO budgetDTO) throws BackendError {
         Budget budget = new Budget();
         budget.setDescription(budgetDTO.getDescription());
         budget.setName(budgetDTO.getName());
         budget.setTotal(budgetDTO.getTotal());
-        Optional<User> manage = userRepository.findById(budgetDTO.getManageID());
-        if(manage.isPresent()){
+        budget.setMonth(budgetDTO.getMonth());
+        budget.setYear(budgetDTO.getYear());
+        Optional<User> manage = userRepository.findById(budgetDTO.getManagerID());
+        if (manage.isPresent()) {
             budget.setManager((Manager) manage.get());
-        }else{
-            throw new BackendError(HttpStatus.BAD_REQUEST,"Thao tac khong ton tai");
+        } else {
+            throw new BackendError(HttpStatus.BAD_REQUEST, "Không tồn tại người quản lí này");
         }
         return budget;
+    }
 
+    public Budget getBudgetByMonthAndYear(int month, int year) {
+        return budgetRepository.findBudgetByMonthAndYear(month, year);
     }
 }

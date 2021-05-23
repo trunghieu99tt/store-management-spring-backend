@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+@CrossOrigin(maxAge = 3600)
 @RestController
 @RequestMapping("/api/v1/revenue")
 @RequiredArgsConstructor
@@ -67,6 +67,14 @@ public class RevenueController {
     }
 
     @ApiOperation(value = "Get revenue by id")
+    @GetMapping("/getAll")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<APIResponse> getAllRevenue() throws BackendError {
+        return ResponseTool.GET_OK(revenueService.getAll());
+    }
+
+
+    @ApiOperation(value = "Get revenue by id")
     @GetMapping("/{revenueID}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<APIResponse> getRevenue(
@@ -94,7 +102,6 @@ public class RevenueController {
             throw new BackendError(HttpStatus.BAD_REQUEST, message);
         }
         Revenue revenue = revenueService.parseRevenueDTOToRevenue(revenueDTO);
-        revenue.setCreatedAt(revenueDB.getCreatedAt());
         revenue.setId(revenueID);
         return ResponseTool.PUT_OK(revenueService.updateRevenue(revenue));
     }
@@ -115,7 +122,7 @@ public class RevenueController {
 
 
     @ApiOperation(value = "Create revenue")
-    @PostMapping("/")
+    @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<APIResponse> createTodo(
             @Parameter(description = "Todo model to create", required = true,
@@ -124,7 +131,6 @@ public class RevenueController {
             @Valid @RequestBody RevenueDTO revenueDTO)
             throws BackendError {
         Revenue revenue = revenueService.parseRevenueDTOToRevenue(revenueDTO);
-        revenue.setCreatedAt(new Date());
         Revenue newRevenue = revenueService.add(revenue);
         return ResponseTool.POST_OK(newRevenue);
     }

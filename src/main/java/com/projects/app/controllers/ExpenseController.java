@@ -35,13 +35,17 @@ public class ExpenseController {
 
     @PostMapping("")
     public ResponseEntity<APIResponse> createOne(
-            @Parameter(description = "Todo model to create", required = true,
+            @Parameter(description = "create", required = true,
                     schema =
                     @Schema(implementation = ExpenseDTO.class))
             @Valid @RequestBody ExpenseDTO expenseDTO)
             throws BackendError {
         Expense expense = expenseService.parseExpenseDTOToExpense(expenseDTO);
-        expense.setDate(new Date());
+        if (expenseDTO.getDate() != null) {
+            expense.setDate(expenseDTO.getDate());
+        } else {
+            expense.setDate(new Date());
+        }
         Expense newExpense = expenseService.createOne(expense);
         return ResponseTool.POST_OK(newExpense);
     }
@@ -70,9 +74,7 @@ public class ExpenseController {
             throw new BackendError(HttpStatus.BAD_REQUEST, message);
         }
         Expense expense = expenseService.parseExpenseDTOToExpense(expenseDTO);
-
-        // Set back date and id (these fields can't be changed)
-        expense.setDate(expenseDB.getDate());
+        // Set back id (these fields can't be changed)
         expense.setId(expenseID);
         return ResponseTool.PUT_OK(expenseService.updateOne(expense));
     }

@@ -15,7 +15,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class ExpenseDTO {
 
-    @NotNull
     private Date date;
 
     @NotBlank(message = "Please provide description for expense")

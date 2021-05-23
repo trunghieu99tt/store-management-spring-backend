@@ -1,30 +1,19 @@
-package com.projects.app.models.user;
+package com.projects.app.models.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.JOINED)
-public class User implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
-    @Column(unique = true, nullable = false)
-    private Long id;
+public class UserDTO {
 
     @NotBlank(message = "Please provide name of user")
     @Size(min = 1, max = 100)
@@ -45,11 +34,11 @@ public class User implements Serializable {
     private String username;
 
     @NotBlank(message = "Please provide phone ")
+    @JsonIgnore
     @Size(min = 1, max = 100)
     private String password;
 
     @NotBlank(message = "Please provide role")
     @Size(min = 1, max = 100)
     private String role;
-
 }
