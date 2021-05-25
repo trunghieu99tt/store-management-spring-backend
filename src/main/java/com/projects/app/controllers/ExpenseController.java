@@ -19,7 +19,7 @@ import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+@CrossOrigin(maxAge = 3600)
 @RestController
 @RequestMapping("api/v1/expense")
 @Tag(name = "expense")
