@@ -17,13 +17,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
+@Component
 public class ReportService {
 
     @Autowired
@@ -75,8 +75,20 @@ public class ReportService {
         List<Revenue> revenues = revenueRepository.getRevenueByCreatedAtBetween(dateFrom, dateTo
         );
         List<Expense> expenses = expenseRepository.findByDateBetween(dateFrom, dateTo);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateFrom);
+        int monthFrom = calendar.get(Calendar.MONTH) + 1;
+        calendar.setTime(dateTo);
+        int monthTo = calendar.get(Calendar.MONTH) + 1;
+
         List<Budget> budgets = budgetRepository.findAll();
-        reportDTO.setBudgets(budgets);
+        ArrayList<Budget> filteredBudgets = new ArrayList<>();
+        for (Budget budget : budgets){
+            if(monthFrom <= budget.getMonth() && budget.getMonth() <= monthTo){
+                filteredBudgets.add(budget);
+            }
+        }
+        reportDTO.setBudgets(filteredBudgets);
         reportDTO.setExpenses(expenses);
         reportDTO.setRevenues(revenues);
         float totalRevenue = 0;
@@ -89,7 +101,7 @@ public class ReportService {
             totalExpense += e.getTotal();
         }
         float totalBudget = 0;
-        for (Budget b : budgets) {
+        for (Budget b : filteredBudgets) {
             System.out.println(b.toString());
             totalBudget += b.getTotal();
         }
